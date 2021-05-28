@@ -52,20 +52,11 @@ dnsmasq config domain:
 dnsmasq:
   service.running:
     - enable: True
-
-#adding DNS records to the /etc/hosts file#
-dnsmasq config hosts:
-  file.keyvalue:
-  - name: {{ hosts }}
-  - key: 10.0.0.30
-  - value: dlp.srv.world dlp
-  - separator: '  '
-  - append_if_not_found: true
-
-#restart dnsmasq service#
-dnsmasq:
-  service.running:
-    - enable: True
     - reload: True
     - watch:
       - pkg: dnsmasq
+
+#adding DNS records to the /etc/hosts file#
+dlp.srv.world dlp:
+  host.present:
+    - ip: 10.0.0.30
