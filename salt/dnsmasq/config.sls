@@ -3,28 +3,28 @@
 {% set hosts = '/etc/hosts' %}
 
 #Uncommenting out all required options in the dnsmasq configuration file#
-dnsmasq-domain-need:
+dnsmasq config domain-need:
   file.replace:
     - name: {{ dnsmasqconfig }}
     - pattern: '^#domain-needed'
     - repl: domain-needed
     - append_if_not_found: True
 
-dnsmasq-bogus-priv:
+dnsmasq config bogus-priv:
   file.replace:
     - name: {{ dnsmasqconfig }}
     - pattern: '^#bogus-priv'
     - repl: bogus-priv
     - append_if_not_found: True
 
-dnsmasq-strict-order:
+dnsmasq config strict-order:
   file.replace:
     - name: {{ dnsmasqconfig }}
     - pattern: '^#strict-order'
     - repl: strict-order
     - append_if_not_found: True
 
-dnsmasq-expand-hosts:
+dnsmasq config expand-hosts:
   file.replace:
     - name: {{ dnsmasqconfig }}
     - pattern: '^#expand-hosts'
@@ -37,7 +37,7 @@ dnsmasq config server:
   - name: {{ dnsmasqconfig }}
   - key: server
   - value: /server.education/10.0.0.10
-  - separator: ' = '
+  - separator: '='
   - append_if_not_found: true
 
 dnsmasq config domain:
@@ -45,17 +45,13 @@ dnsmasq config domain:
   - name: {{ dnsmasqconfig }}
   - key: domain
   - value: srv.world
-  - separator: ' = '
+  - separator: '='
   - append_if_not_found: true
 
 #start and enable dnsmasq#
-start dnsmasq:
-  cmd.run:
-    - name: systemctl start dnsmasq
-
-enable dnsmasq:
-  cmd.run:
-    - name: systemctl enable dnsmasq
+dnsmasq:
+  service.running:
+    - enable: True
 
 #adding DNS records to the /etc/hosts file#
 dnsmasq config hosts:
@@ -67,6 +63,9 @@ dnsmasq config hosts:
   - append_if_not_found: true
 
 #restart dnsmasq service#
-restart dnsmasq:
-  cmd.run:
-    - name: systemctl restart dnsmasq
+dnsmasq:
+  service.running:
+    - enable: True
+    - reload: True
+    - watch:
+      - pkg: dnsmasq
