@@ -5,4 +5,4 @@ dnsmasq
   config: '/etc/dnsmasq.conf'
   service:
     name: dnsmasq
-    enabled: True
+    enabled: false
